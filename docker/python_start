@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Waiting Cassandra..."
+while ! nc -z localhost 9042; do
+  sleep 0.1 # wait for 1/10 of the second before check again
+done
+
+#sleep 20
+
+echo "Running create_tables..."
+python create_tables.py
+echo "Runnning create_csv..."
+python create_csv.py
+echo "Running ETL..."
+python ETL.py

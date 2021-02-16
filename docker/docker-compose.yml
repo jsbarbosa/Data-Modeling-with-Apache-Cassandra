@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  cassandra:
+    image: cassandra
+    container_name: cassandra
+    network_mode: host
+
+  python_cassandra:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+
+    image: python
+    depends_on:
+      - cassandra
+    network_mode: host
+    command: /python_start
+    environment:
+      - "PYTHONUNBUFFERED=1"
