@@ -5,6 +5,9 @@ services:
     image: cassandra
     container_name: cassandra
     network_mode: host
+    environment:
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=200M
 
   python_cassandra:
     build:

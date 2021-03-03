@@ -21,34 +21,71 @@ DROP TABLE IF EXISTS {table}
 
 DATA_PATH: str = "event_data"
 
-TABLES: dict = {
-    'music_app': {
-        'table': 'music_app',
+
+CASSANDRA_TABLE_TYPES: dict = dict(
+    [
+        ('artist', 'text'),
+        ('firstName', 'text'),
+        ('gender', 'text'),
+        ('itemInSession', 'int'),
+        ('lastName', 'text'),
+        ('length', 'decimal'),
+        ('level', 'text'),
+        ('location', 'text'),
+        ('sessionId', 'int'),
+        ('song', 'text'),
+        ('userId', 'int')
+    ]
+)
+
+TABLES: list = [
+    {
+        'table': 'music_heard_in_session',
         'primary_keys': [
             'sessionId',
             'itemInSession',
-            'userId',
-            'song'
         ],
-        'select_query': "SELECT artist, song, length FROM music_app WHERE sessionId = 338 and itemInSession = 4"
+        'fields': [
+            'sessionId',
+            'itemInSession',
+            'song',
+            'artist',
+            'length',
+        ],
+        'select_query': "SELECT artist, song, length FROM {table} WHERE sessionId = 338 and itemInSession = 4"
     },
-    'music_app1': {
-        'table': 'music_app1',
+    {
+        'table': 'user_music_session',
         'primary_keys': [
-            'userId',
-            'sessionId'
+            '(userId, sessionId)',
+            'itemInSession'
         ],
-        'select_query': "SELECT artist, song, length, firstName, lastName FROM music_app1 WHERE userId = 10 and sessionId = 182"
+        'fields': [
+            'userId',
+            'sessionId',
+            'itemInSession',
+            'artist',
+            'song',
+            'firstName',
+            'lastName'
+        ],
+        'select_query': "SELECT artist, song, firstName, lastName FROM {table} WHERE userId = 10 and sessionId = 182"
     },
-    'music_app2': {
-        'table': 'music_app2',
+    {
+        'table': 'song_listening_activity',
         'primary_keys': [
             'song',
-            'userId'
+            'userId',
         ],
-        'select_query': "SELECT firstName, lastName FROM music_app2 WHERE song = 'All Hands Against His Own' ALLOW FILTERING"
+        'fields': [
+            'song',
+            'userId',
+            'firstName',
+            'lastName'
+        ],
+        'select_query': "SELECT firstName, lastName FROM {table} WHERE song = 'All Hands Against His Own'"
     }
-}
+]
 
 TYPES: dict = {
     'text': str,
@@ -70,18 +107,5 @@ CSV_COLUMNS: list = [
     'userId'
 ]
 
-CASSANDRA_TABLE_TYPES: list = [
-    ('artist', 'text'),
-    ('firstName', 'text'),
-    ('gender', 'text'),
-    ('itemInSession', 'int'),
-    ('lastName', 'text'),
-    ('length', 'decimal'),
-    ('level', 'text'),
-    ('location', 'text'),
-    ('sessionId', 'int'),
-    ('song', 'text'),
-    ('userId', 'int')
-]
 
 EVENT_DATAFILE: str = "event_datafile_new.csv"

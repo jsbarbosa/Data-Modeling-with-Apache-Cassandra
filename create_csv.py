@@ -24,7 +24,7 @@ full_data = pd.concat(
     subset=['artist']
 )[CSV_COLUMNS].astype(
     {
-        col: TYPES[col_type] for col, col_type in CASSANDRA_TABLE_TYPES
+        col: TYPES[col_type] for col, col_type in CASSANDRA_TABLE_TYPES.items()
     }
 )
 

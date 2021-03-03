@@ -1,5 +1,6 @@
 from cassandra.cluster import Cluster
-from constants import CREATE_KEYSPACE, CREATE_TABLE_TEMPLATE, KEYSPACE, DROP_TABLE_TEMPLATE, TABLES, CASSANDRA_TABLE_TYPES
+from constants import CREATE_KEYSPACE, CREATE_TABLE_TEMPLATE, KEYSPACE,\
+    DROP_TABLE_TEMPLATE, TABLES, CASSANDRA_TABLE_TYPES
 
 # To establish connection and begin executing queries, need a session
 cluster = Cluster()
@@ -12,9 +13,7 @@ session.execute(CREATE_KEYSPACE)
 session.set_keyspace(KEYSPACE)
 
 # build column names and types for CREATE TABLE query
-fields = ", ".join(" ".join(field) for field in CASSANDRA_TABLE_TYPES)
-
-for table in TABLES.values():
+for table in TABLES:
     # drop table if exist
     session.execute(
         DROP_TABLE_TEMPLATE.format(
@@ -24,7 +23,12 @@ for table in TABLES.values():
 
     # build primary keys string
     primary_keys = ", ".join(table['primary_keys'])
-
+    fields = ", ".join(
+        [
+            f"{field} {CASSANDRA_TABLE_TYPES[field]}"
+            for field in table['fields']
+        ]
+    )
     # create table
     session.execute(
         CREATE_TABLE_TEMPLATE.format(
